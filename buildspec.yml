@@ -1,0 +1,16 @@
+version: 0.2
+
+env:
+  variables:
+    PYTHONIOENCODING: utf-8
+    PYTHONPATH: $CODEBUILD_SRC_DIR/github.com/horstle/script.module.inputstreamhelper/lib:$CODEBUILD_SRC_DIR/github.com/horstle/script.module.inputstreamhelper/tests
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.7
+      python: 3.8
+  pre_build:
+    commands:
+      - pip install -r requirements.txt
+      - python -m unittest tests/test_ishelper_linux_arm.py
