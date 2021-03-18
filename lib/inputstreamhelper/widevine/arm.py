@@ -8,8 +8,8 @@ import json
 from time import time
 
 from .. import config
-from ..kodiutils import browsesingle, copy, exists, localize, log, mkdir, ok_dialog, open_file, progress_dialog, yesno_dialog
-from ..utils import cmd_exists, diskspace, http_download, http_get, run_cmd, sizeof_fmt, store, system_os, temp_path, update_temp_path
+from ..kodiutils import browsesingle, copy, exists, get_setting_bool, localize, log, mkdir, ok_dialog, open_file, progress_dialog, yesno_dialog
+from ..utils import cmd_exists, diskspace, http_download, http_get, run_cmd, sizeof_fmt, store, system_os, temp_path, untar, update_temp_path
 from ..unicodes import compat_path, to_unicode
 from .arm_chromeos import ChromeOSImage
 
@@ -122,8 +122,29 @@ def chromeos_config():
     return json.loads(http_get(config.CHROMEOS_RECOVERY_URL))
 
 
-def install_widevine_arm(backup_path):
+def install_widevine_rpi(backup_path, cdm_version):
+    """Installs Widevine CDM on Raspberry Pis."""
+    url = config.RPI_WIDEVINE_DOWNLOAD_URL.format(version=cdm_version)
+    downloaded = http_download(url)
+
+    if not downloaded:
+        return False
+
+    progress = progress_dialog()
+    progress.create(heading=localize(30043), message=localize(30044))  # Extracting Widevine CDM
+
+    files_to_extract = [os.path.join(config.RPI_WIDEVINE_LIB_PATH, config.WIDEVINE_CDM_FILENAME[system_os()]),
+                        os.path.join(config.RPI_WIDEVINE_MANIFEST_PATH, config.WIDEVINE_MANIFEST_FILE)]
+    untar(store('download_path'), os.path.join(backup_path, cdm_version), files_to_extract)
+
+    return (progress, cdm_version)
+
+
+def install_widevine_arm(backup_path, cdm_version):
     """Installs Widevine CDM on ARM-based architectures."""
+    if get_setting_bool('rpi_widevine_source'):
+        return install_widevine_rpi(backup_path, cdm_version)
+
     devices = chromeos_config()
     arm_device = select_best_chromeos_image(devices)
     if arm_device is None:

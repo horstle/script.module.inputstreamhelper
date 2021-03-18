@@ -71,6 +71,14 @@ WIDEVINE_VERSIONS_URL = 'https://dl.google.com/widevine-cdm/versions.txt'
 
 WIDEVINE_DOWNLOAD_URL = 'https://dl.google.com/widevine-cdm/{version}-{os}-{arch}.zip'
 
+RPI_WIDEVINE_URL = 'http://archive.raspberrypi.org/debian/pool/main/w/widevine/'
+
+RPI_WIDEVINE_DOWNLOAD_URL = 'http://archive.raspberrypi.org/debian/pool/main/w/widevine/widevine_{version}.orig.tar.xz'
+
+RPI_WIDEVINE_LIB_PATH = "widevine/opt/WidevineCdm/_platform_specific/linux_arm/"
+
+RPI_WIDEVINE_MANIFEST_PATH = "widevine/opt/WidevineCdm/"
+
 WIDEVINE_LICENSE_FILE = 'LICENSE.txt'
 
 WIDEVINE_MANIFEST_FILE = 'manifest.json'

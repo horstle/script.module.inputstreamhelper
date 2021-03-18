@@ -169,9 +169,8 @@ class Helper:
         return True
 
     @staticmethod
-    def _install_widevine_x86(bpath):
+    def _install_widevine_x86(bpath, cdm_version):
         """Install Widevine CDM on x86 based architectures."""
-        cdm_version = latest_widevine_version()
 
         if not store('download_path'):
             cdm_os = config.WIDEVINE_OS_MAP[system_os()]
@@ -218,10 +217,12 @@ class Helper:
         if not widevine_eula():
             return False
 
+        cdm_version = latest_widevine_version()
+
         if 'x86' in arch():
-            result = self._install_widevine_x86(backup_path())
+            result = self._install_widevine_x86(backup_path(), cdm_version)
         else:
-            result = install_widevine_arm(backup_path())
+            result = install_widevine_arm(backup_path(), cdm_version)
         if not result:
             return result
 

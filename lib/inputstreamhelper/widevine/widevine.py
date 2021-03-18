@@ -7,7 +7,8 @@ import os
 from time import time
 
 from .. import config
-from ..kodiutils import addon_profile, exists, get_setting_int, listdir, localize, log, mkdirs, ok_dialog, open_file, set_setting, translate_path, yesno_dialog
+from ..kodiutils import (addon_profile, exists, get_setting_bool, get_setting_int, listdir, localize, log, mkdirs, ok_dialog, open_file,
+                         set_setting, translate_path, yesno_dialog)
 from ..utils import arch, cmd_exists, hardlink, http_download, http_get, remove_tree, run_cmd, store, system_os
 from ..unicodes import compat_path, to_unicode
 
@@ -159,6 +160,14 @@ def latest_widevine_version(eula=False):
         url = config.WIDEVINE_VERSIONS_URL
         versions = http_get(url)
         return versions.split()[-1]
+
+    if get_setting_bool('rpi_widevine_source'):
+        import re
+
+        url = config.RPI_WIDEVINE_URL
+        files = http_get(url)
+        version = re.search(r'[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+', files).group(0)
+        return version
 
     from .arm import chromeos_config, select_best_chromeos_image
     devices = chromeos_config()

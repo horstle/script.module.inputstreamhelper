@@ -187,6 +187,19 @@ def unzip(source, destination, file_to_unzip=None, result=[]):  # pylint: disabl
     return bool(result)
 
 
+def untar(source, destination, files_to_extract):
+    """Extract files from tar archive to specified path"""
+    import tarfile
+
+    if not exists(destination):
+        mkdirs(destination)
+
+    archive = tarfile.open(source)
+    for file_to_extract in files_to_extract:
+        with open(os.path.join(destination, os.path.basename(file_to_extract)), 'wb') as fobj:
+            fobj.write(archive.extractfile(file_to_extract).read())
+
+
 def system_os():
     """Get system platform, and remember this information"""
 
